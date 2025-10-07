@@ -1,0 +1,163 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6rem;
+  max-width: 100%;
+  padding: 1.5rem;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover,
+.logo:active {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover,
+.logo.react:active {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.card {
+  flex: 1 1 300px;
+  padding: 2rem;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.read-the-docs {
+  color: #888;
+  font-size: 1rem;
+}
+
+/* Companies component styles */
+.company-table {
+  font-size: 1rem;
+}
+
+.company-table th,
+.company-table td {
+  vertical-align: middle;
+  padding: 0.75rem;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.company-modal .modal-dialog {
+  max-width: 90vw;
+}
+
+.company-modal .form-control {
+  font-size: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #root {
+    padding: 1rem;
+  }
+
+  .logo {
+    height: 4rem;
+    padding: 1rem;
+  }
+
+  .card {
+    flex: 1 1 100%;
+    padding: 1rem;
+  }
+
+  a:nth-of-type(2) .logo {
+    animation: none;
+  }
+
+  .company-table {
+    font-size: 0.9rem;
+  }
+
+  .company-table th,
+  .company-table td {
+    padding: 0.5rem;
+  }
+
+  .company-modal .modal-dialog {
+    max-width: 95vw;
+  }
+
+  .company-modal .form-control,
+  .company-modal .btn {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    font-size: 14px;
+  }
+
+  .container-fluid {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
+
+  .navbar-nav {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .company-table {
+    font-size: 0.85rem;
+  }
+
+  .company-table th,
+  .company-table td {
+    padding: 0.4rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .company-modal .form-control,
+  .company-modal .btn {
+    font-size: 0.85rem;
+  }
+}
