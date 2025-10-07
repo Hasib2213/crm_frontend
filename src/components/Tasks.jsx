@@ -4,7 +4,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 function Tasks() {
-  const { access } = useSelector((state) => state.auth); // ✅ Get access token from Redux
+  const { access } = useSelector((state) => state.auth); // Get access token from Redux
   const [tasks, setTasks] = useState([]);
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -16,33 +16,32 @@ function Tasks() {
     owner: "",
   });
 
-  // ✅ Fetch tasks
+  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api"; // Use environment variable
+  const headers = { Authorization: `Bearer ${access}` };
+
+  // Fetch tasks
   const fetchTasks = async () => {
     if (!access) return;
     try {
-      const res = await axios.get("/api/tasks/", {
-        headers: { Authorization: `Bearer ${access}` },
-      });
+      const res = await axios.get(`${apiUrl}/tasks/`, { headers });
       setTasks(res.data.results || res.data);
     } catch (err) {
       console.error("Error fetching tasks:", err);
     }
   };
 
-  // ✅ Fetch users
+  // Fetch users
   const fetchUsers = async () => {
     if (!access) return;
     try {
-      const res = await axios.get("/api/users/", {
-        headers: { Authorization: `Bearer ${access}` },
-      });
+      const res = await axios.get(`${apiUrl}/users/`, { headers });
       setUsers(res.data.results || res.data);
     } catch (err) {
       console.error("Error fetching users:", err);
     }
   };
 
-  // ✅ Load data on mount or when access changes
+  // Load data on mount or when access changes
   useEffect(() => {
     fetchTasks();
     fetchUsers();
@@ -92,14 +91,10 @@ function Tasks() {
     try {
       if (editingTask) {
         // Update task
-        await axios.put(`/api/tasks/${editingTask.id}/`, payload, {
-          headers: { Authorization: `Bearer ${access}` },
-        });
+        await axios.put(`${apiUrl}/tasks/${editingTask.id}/`, payload, { headers });
       } else {
         // Create task
-        await axios.post("/api/tasks/", payload, {
-          headers: { Authorization: `Bearer ${access}` },
-        });
+        await axios.post(`${apiUrl}/tasks/`, payload, { headers });
       }
       fetchTasks();
       handleClose();
@@ -113,9 +108,7 @@ function Tasks() {
     if (!window.confirm("Are you sure you want to delete this task?")) return;
 
     try {
-      await axios.delete(`/api/tasks/${id}/`, {
-        headers: { Authorization: `Bearer ${access}` },
-      });
+      await axios.delete(`${apiUrl}/tasks/${id}/`, { headers });
       fetchTasks();
     } catch (err) {
       console.error("Error deleting task:", err);

@@ -9,11 +9,13 @@ function VerifyEmail() {
   const [message, setMessage] = useState('');
   const [variant, setVariant] = useState('info'); // For Alert styling
 
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api'; // Use environment variable
+
   useEffect(() => {
     console.log('Received Token:', token); // Debug
     console.log('Decoded Token:', decodedToken); // Debug
     axios
-      .get(`http://localhost:8000/api/verify-email/${decodedToken}/`)
+      .get(`${apiUrl}/verify-email/${decodedToken}/`)
       .then((res) => {
         setMessage(res.data.message);
         setVariant('success');
