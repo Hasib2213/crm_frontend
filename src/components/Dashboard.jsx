@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function Dashboard() {
-  const { access } = useSelector((state) => state.auth); // ✅ Get token from Redux
+  const { access } = useSelector((state) => state.auth); // Get token from Redux
   const [data, setData] = useState({
     total_contacts: 0,
     total_leads: 0,
@@ -20,6 +20,8 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api"; // Use environment variable
+
   useEffect(() => {
     if (!access) {
       setError("Authentication required. Please log in.");
@@ -28,7 +30,7 @@ function Dashboard() {
     }
 
     axios
-      .get("http://127.0.0.1:8000/api/dashboard/", {
+      .get(`${apiUrl}/dashboard/`, {
         headers: { Authorization: `Bearer ${access}` },
       })
       .then((res) => {

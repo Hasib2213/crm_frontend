@@ -4,7 +4,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 function Contacts() {
-  const { access } = useSelector((state) => state.auth); // ✅ Get access token from Redux
+  const { access } = useSelector((state) => state.auth); // Get access token from Redux
   const [contacts, setContacts] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -22,39 +22,38 @@ function Contacts() {
     last_contact_date: "",
   });
 
-  // ✅ Fetch contacts
+  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api"; // Use environment variable
+  const headers = { Authorization: `Bearer ${access}` };
+
+  // Fetch contacts
   const fetchContacts = async () => {
     if (!access) return;
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/contacts/", {
-        headers: { Authorization: `Bearer ${access}` },
-      });
+      const res = await axios.get(`${apiUrl}/contacts/`, { headers });
       setContacts(res.data.results || res.data);
     } catch (err) {
       console.error("Error fetching contacts:", err);
     }
   };
 
-  // ✅ Fetch companies
+  // Fetch companies
   const fetchCompanies = async () => {
     if (!access) return;
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/companies/", {
-        headers: { Authorization: `Bearer ${access}` },
-      });
+      const res = await axios.get(`${apiUrl}/companies/`, { headers });
       setCompanies(res.data.results || res.data);
     } catch (err) {
       console.error("Error fetching companies:", err);
     }
   };
 
-  // ✅ Load data on mount
+  // Load data on mount
   useEffect(() => {
     fetchContacts();
     fetchCompanies();
   }, [access]);
 
-  // ✅ Open modal for Add/Edit
+  // Open modal for Add/Edit
   const handleShow = (contact = null) => {
     if (contact) {
       setEditingContact(contact);
@@ -95,7 +94,7 @@ function Contacts() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Add or Update Contact
+  // Add or Update Contact
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!access) return;
@@ -105,18 +104,10 @@ function Contacts() {
     try {
       if (editingContact) {
         // Update contact
-        await axios.put(
-          `http://127.0.0.1:8000/api/contacts/${editingContact.id}/`,
-          payload,
-          {
-            headers: { Authorization: `Bearer ${access}` },
-          }
-        );
+        await axios.put(`${apiUrl}/contacts/${editingContact.id}/`, payload, { headers });
       } else {
         // Add new contact
-        await axios.post("http://127.0.0.1:8000/api/contacts/", payload, {
-          headers: { Authorization: `Bearer ${access}` },
-        });
+        await axios.post(`${apiUrl}/contacts/`, payload, { headers });
       }
       fetchContacts();
       handleClose();
@@ -125,15 +116,13 @@ function Contacts() {
     }
   };
 
-  // ✅ Delete contact
+  // Delete contact
   const handleDelete = async (id) => {
     if (!access) return;
     if (!window.confirm("Are you sure you want to delete this contact?")) return;
 
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/contacts/${id}/`, {
-        headers: { Authorization: `Bearer ${access}` },
-      });
+      await axios.delete(`${apiUrl}/contacts/${id}/`, { headers });
       fetchContacts();
     } catch (err) {
       console.error("Error deleting contact:", err);
@@ -198,7 +187,7 @@ function Contacts() {
         </tbody>
       </Table>
 
-      {/* ✅ Add/Edit Modal */}
+      {/* Add/Edit Modal */}
       <Modal show={showModal} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>

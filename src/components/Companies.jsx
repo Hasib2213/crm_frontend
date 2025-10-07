@@ -16,15 +16,16 @@ function Companies() {
     notes: ''
   });
 
+  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api"; // Use environment variable
+  const headers = { Authorization: `Bearer ${access}` };
+
   useEffect(() => {
     if (access) fetchCompanies();
   }, [access]);
 
   const fetchCompanies = async () => {
     try {
-      const res = await axios.get('/api/companies/', {
-        headers: { Authorization: `Bearer ${access}` },
-      });
+      const res = await axios.get(`${apiUrl}/companies/`, { headers });
       setCompanies(res.data);
     } catch (err) {
       console.error('Error fetching companies:', err);
@@ -57,13 +58,9 @@ function Companies() {
   const handleSubmit = async () => {
     try {
       if (editingCompany) {
-        await axios.put(`/api/companies/${editingCompany.id}/`, formData, {
-          headers: { Authorization: `Bearer ${access}` },
-        });
+        await axios.put(`${apiUrl}/companies/${editingCompany.id}/`, formData, { headers });
       } else {
-        await axios.post('/api/companies/', formData, {
-          headers: { Authorization: `Bearer ${access}` },
-        });
+        await axios.post(`${apiUrl}/companies/`, formData, { headers });
       }
       fetchCompanies();
       handleCloseModal();
@@ -75,9 +72,7 @@ function Companies() {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this company?')) {
       try {
-        await axios.delete(`/api/companies/${id}/`, {
-          headers: { Authorization: `Bearer ${access}` },
-        });
+        await axios.delete(`${apiUrl}/companies/${id}/`, { headers });
         fetchCompanies();
       } catch (err) {
         console.error('Error deleting company:', err);
