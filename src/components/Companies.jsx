@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 function Companies() {
   const { access } = useSelector((state) => state.auth);
   const [companies, setCompanies] = useState([]);
+  const [contacts, setContacts] = useState([]); // ✅ Added
   const [showModal, setShowModal] = useState(false);
   const [editingCompany, setEditingCompany] = useState(null);
   const [formData, setFormData] = useState({
@@ -13,14 +14,18 @@ function Companies() {
     industry: '',
     size_revenue: '',
     address: '',
-    notes: ''
+    notes: '',
+    primary_contact: ''
   });
 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api"; // Use environment variable
+  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
   const headers = { Authorization: `Bearer ${access}` };
 
   useEffect(() => {
-    if (access) fetchCompanies();
+    if (access) {
+      fetchCompanies();
+      fetchContacts(); // ✅ Added
+    }
   }, [access]);
 
   const fetchCompanies = async () => {
@@ -32,10 +37,27 @@ function Companies() {
     }
   };
 
+  // ✅ Fetch contacts for dropdown
+  const fetchContacts = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/contacts/`, { headers });
+      setContacts(res.data);
+    } catch (err) {
+      console.error('Error fetching contacts:', err);
+    }
+  };
+
   const handleShowModal = (company = null) => {
     if (company) {
       setEditingCompany(company);
-      setFormData(company);
+      setFormData({
+        name: company.name || '',
+        industry: company.industry || '',
+        size_revenue: company.size_revenue || '',
+        address: company.address || '',
+        notes: company.notes || '',
+        primary_contact: company.primary_contact?.id || ''
+      });
     } else {
       setEditingCompany(null);
       setFormData({
@@ -43,7 +65,8 @@ function Companies() {
         industry: '',
         size_revenue: '',
         address: '',
-        notes: ''
+        notes: '',
+        primary_contact: ''
       });
     }
     setShowModal(true);
@@ -52,7 +75,11 @@ function Companies() {
   const handleCloseModal = () => setShowModal(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: name === "primary_contact" ? parseInt(value) || '' : value
+    });
   };
 
   const handleSubmit = async () => {
@@ -182,6 +209,23 @@ function Companies() {
                 onChange={handleChange}
                 placeholder="Enter size or revenue"
               />
+            </Form.Group>
+
+            {/* ✅ Added Primary Contact dropdown */}
+            <Form.Group className="mb-3">
+              <Form.Label>Primary Contact</Form.Label>
+              <Form.Select
+                name="primary_contact"
+                value={formData.primary_contact || ''}
+                onChange={handleChange}
+              >
+                <option value="">Select a contact</option>
+                {contacts.map(contact => (
+                  <option key={contact.id} value={contact.id}>
+                    {contact.full_name}
+                  </option>
+                ))}
+              </Form.Select>
             </Form.Group>
 
             <Form.Group className="mb-3">
