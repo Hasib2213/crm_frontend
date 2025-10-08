@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 function Companies() {
   const { access } = useSelector((state) => state.auth);
   const [companies, setCompanies] = useState([]);
-  const [contacts, setContacts] = useState([]); // ✅ Added
+  const [contacts, setContacts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingCompany, setEditingCompany] = useState(null);
   const [formData, setFormData] = useState({
@@ -15,7 +15,7 @@ function Companies() {
     size_revenue: '',
     address: '',
     notes: '',
-    primary_contact: ''
+    primary_contact_id: ''
   });
 
   const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
@@ -24,7 +24,7 @@ function Companies() {
   useEffect(() => {
     if (access) {
       fetchCompanies();
-      fetchContacts(); // ✅ Added
+      fetchContacts();
     }
   }, [access]);
 
@@ -37,7 +37,6 @@ function Companies() {
     }
   };
 
-  // ✅ Fetch contacts for dropdown
   const fetchContacts = async () => {
     try {
       const res = await axios.get(`${apiUrl}/contacts/`, { headers });
@@ -56,7 +55,7 @@ function Companies() {
         size_revenue: company.size_revenue || '',
         address: company.address || '',
         notes: company.notes || '',
-        primary_contact: company.primary_contact?.id || ''
+        primary_contact_id: company.primary_contact?.id || ''
       });
     } else {
       setEditingCompany(null);
@@ -66,7 +65,7 @@ function Companies() {
         size_revenue: '',
         address: '',
         notes: '',
-        primary_contact: ''
+        primary_contact_id: ''
       });
     }
     setShowModal(true);
@@ -78,7 +77,7 @@ function Companies() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: name === "primary_contact" ? parseInt(value) || '' : value
+      [name]: name === "primary_contact_id" ? parseInt(value) || '' : value
     });
   };
 
@@ -139,7 +138,6 @@ function Companies() {
                     size="sm"
                     className="me-2 mb-1 mb-sm-0"
                     onClick={() => handleShowModal(company)}
-                    aria-label={`Edit ${company.name}`}
                   >
                     Edit
                   </Button>
@@ -148,7 +146,6 @@ function Companies() {
                     size="sm"
                     className="mb-1 mb-sm-0"
                     onClick={() => handleDelete(company.id)}
-                    aria-label={`Delete ${company.name}`}
                   >
                     Delete
                   </Button>
@@ -159,22 +156,11 @@ function Companies() {
         </Table>
       </div>
 
-      <Button
-        variant="primary"
-        onClick={() => handleShowModal()}
-        className="mt-3"
-        aria-label="Add new company"
-      >
+      <Button variant="primary" onClick={() => handleShowModal()} className="mt-3">
         Add Company
       </Button>
 
-      <Modal
-        show={showModal}
-        onHide={handleCloseModal}
-        centered
-        size="lg"
-        className="company-modal"
-      >
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
         <Modal.Header closeButton>
           <Modal.Title>{editingCompany ? 'Edit Company' : 'Add Company'}</Modal.Title>
         </Modal.Header>
@@ -211,12 +197,11 @@ function Companies() {
               />
             </Form.Group>
 
-            {/* ✅ Added Primary Contact dropdown */}
             <Form.Group className="mb-3">
               <Form.Label>Primary Contact</Form.Label>
               <Form.Select
-                name="primary_contact"
-                value={formData.primary_contact || ''}
+                name="primary_contact_id"
+                value={formData.primary_contact_id || ''}
                 onChange={handleChange}
               >
                 <option value="">Select a contact</option>
