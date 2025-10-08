@@ -2,13 +2,24 @@ import React, { useState, useEffect } from "react";
 import { Card, Table, Container, Row, Col, Spinner, Alert } from "react-bootstrap";
 import axios from "axios";
 import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function Dashboard() {
-  const { access } = useSelector((state) => state.auth); // Get token from Redux
+  const { access } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
   const [data, setData] = useState({
     total_contacts: 0,
     total_leads: 0,
@@ -20,15 +31,17 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api"; // Use environment variable
+  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 
   useEffect(() => {
+    // ✅ যদি লগইন না থাকে → সরাসরি Signup পেজে রিডাইরেক্ট করো
     if (!access) {
-      setError("Authentication required. Please log in.");
       setLoading(false);
+      navigate("/signup");
       return;
     }
 
+    // ✅ Dashboard data লোড করো
     axios
       .get(`${apiUrl}/dashboard/`, {
         headers: { Authorization: `Bearer ${access}` },
@@ -39,10 +52,10 @@ function Dashboard() {
       })
       .catch((err) => {
         console.error(err);
-        setError("Failed to load dashboard data.");
+        setError("Failed to load dashboard data. Please refresh or try again later.");
         setLoading(false);
       });
-  }, [access]);
+  }, [access, navigate]);
 
   const chartData = {
     labels: data.leads_by_stage.map((item) => item.stage),
@@ -66,6 +79,7 @@ function Dashboard() {
     },
   };
 
+  // 🔹 Loading state
   if (loading) {
     return (
       <Container className="mt-5 text-center">
@@ -75,14 +89,18 @@ function Dashboard() {
     );
   }
 
+  // 🔹 Error state
   if (error) {
     return (
       <Container className="mt-5">
-        <Alert variant="danger">{error}</Alert>
+        <Alert variant="danger" className="shadow-sm text-center">
+          {error}
+        </Alert>
       </Container>
     );
   }
 
+  // 🔹 Dashboard main content
   return (
     <Container className="mt-4">
       <h2 className="mb-4">Dashboard Overview</h2>
@@ -101,7 +119,9 @@ function Dashboard() {
           <Card className="shadow-sm border-0">
             <Card.Body>
               <Card.Title>Total Leads</Card.Title>
-              <Card.Text className="fs-4 fw-bold text-primary">{data.total_leads}</Card.Text>
+              <Card.Text className="fs-4 fw-bold text-primary">
+                {data.total_leads}
+              </Card.Text>
             </Card.Body>
           </Card>
         </Col>
@@ -109,7 +129,9 @@ function Dashboard() {
           <Card className="shadow-sm border-0">
             <Card.Body>
               <Card.Title>Total Clients</Card.Title>
-              <Card.Text className="fs-4 fw-bold text-success">{data.total_clients}</Card.Text>
+              <Card.Text className="fs-4 fw-bold text-success">
+                {data.total_clients}
+              </Card.Text>
             </Card.Body>
           </Card>
         </Col>
@@ -138,7 +160,9 @@ function Dashboard() {
               {data.leads_by_stage.length > 0 ? (
                 <Bar data={chartData} options={chartOptions} />
               ) : (
-                <p className="text-muted mt-3">No data available for leads by stage.</p>
+                <p className="text-muted mt-3">
+                  No data available for leads by stage.
+                </p>
               )}
             </Card.Body>
           </Card>
