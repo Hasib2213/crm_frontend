@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import '../CSS/signup.css';
 
 function Signup() {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
