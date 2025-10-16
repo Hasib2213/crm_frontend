@@ -31,7 +31,7 @@ function Opportunities() {
   // Fetch opportunities
   const fetchOpportunities = async () => {
     if (!access) {
-      setError("No access token available. Please log in.");
+       setError("No access token available. Please log in.");
       return;
     }
     setLoading(true);

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Container, Modal, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import '../CSS/company.css';
+
 
 function Companies() {
   const { access } = useSelector((state) => state.auth);

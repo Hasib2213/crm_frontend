@@ -13,23 +13,29 @@ function Signup() {
     e.preventDefault();
     setMessage('');
     try {
-      // Use environment variable for API URL
       const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
       const res = await axios.post(`${apiUrl}/signup/`, formData);
       setMessage(res.data.message);
       setVariant('success');
       setFormData({ username: '', email: '', password: '' });
-      // Redirect to login page or another route after successful signup
-      setTimeout(() => navigate('/login'), 2000); // Redirect after 2 seconds
+      setTimeout(() => navigate('/login'), 2000);
     } catch (error) {
-      // Improved error handling
       setMessage(error.response?.data?.error || 'An error occurred during signup. Please try again.');
       setVariant('danger');
     }
   };
 
   return (
-    <Container style={{ maxWidth: '400px', marginTop: '50px' }}>
+    <Container
+      style={{
+        maxWidth: '400px',
+        marginTop: '60px',
+        padding: '20px',
+        borderRadius: '10px',
+        boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+        backgroundColor: '#fff',
+      }}
+    >
       <h3 className="mb-3 text-center">Signup</h3>
       {message && <Alert variant={variant}>{message}</Alert>}
       <Form onSubmit={handleSubmit}>
@@ -66,8 +72,17 @@ function Signup() {
           />
         </Form.Group>
 
-        <Button type="submit" className="w-100" variant="primary">
+        <Button type="submit" className="w-100 mb-2" variant="primary">
           Signup
+        </Button>
+
+        {/* 🔹 Login Button */}
+        <Button
+          variant="outline-secondary"
+          className="w-100"
+          onClick={() => navigate('/login')}
+        >
+          Already have an account? Login
         </Button>
       </Form>
     </Container>

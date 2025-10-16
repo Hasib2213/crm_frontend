@@ -1,0 +1,91 @@
+/* ===== Company Form Styling ===== */
+.company-form .form-control {
+  font-size: 0.9rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  transition: all 0.2s ease;
+}
+
+.company-form label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 0.3rem;
+}
+
+.company-form textarea.form-control {
+  min-height: 80px;
+}
+
+.company-form .form-select {
+  font-size: 0.9rem;
+  padding: 0.45rem 0.6rem;
+}
+
+/* ===== Modal Styling (Smaller Width) ===== */
+.modal-dialog {
+  max-width: 300px !important; /* For desktop */
+}
+
+.modal-body {
+  padding: 1rem 1.2rem;
+}
+
+.modal-footer button {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+  .modal-dialog {
+    max-width: 95% !important; /* wider on small screens */
+    margin: 0.5rem auto;
+  }
+
+  .modal-body {
+    padding: 0.8rem;
+  }
+
+  .company-form .form-control,
+  .company-form .form-select {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.5rem;
+  }
+
+  .company-form label {
+    font-size: 0.85rem;
+  }
+
+  .modal-footer button {
+    font-size: 0.85rem;
+    padding: 0.35rem 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-dialog {
+    max-width: 98% !important;
+  }
+
+  .company-form .form-control,
+  .company-form .form-select {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.45rem;
+  }
+
+  .company-form label {
+    font-size: 0.8rem;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .modal-footer button {
+    width: 100%;
+  }
+}
